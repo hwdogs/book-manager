@@ -1,0 +1,6 @@
+@book_dotnet_HostAddress = http://localhost:5026
+
+GET {{book_dotnet_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
