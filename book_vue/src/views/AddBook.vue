@@ -1,87 +1,78 @@
 <template>
-  <div>
-    <el-form
-      :model="ruleForm"
-      :rules="rules"
-      ref="ruleForm"
-      label-width="100px"
-      class="demo-ruleForm"
-    >
+  <div class="add-container">
+    <el-form :model="bookForm" :rules="rules" ref="bookForm" label-width="100px">
       <el-form-item label="书名" prop="name">
-        <el-input v-model="ruleForm.name"></el-input>
+        <el-input v-model="bookForm.name"></el-input>
       </el-form-item>
       <el-form-item label="作者" prop="author">
-        <el-input v-model="ruleForm.author"></el-input>
+        <el-input v-model="bookForm.author"></el-input>
       </el-form-item>
       <el-form-item label="出版社" prop="publish">
-        <el-input v-model="ruleForm.publish"></el-input>
+        <el-input v-model="bookForm.publish"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
-        <el-button @click="resetForm('ruleForm')">重置</el-button>
+        <el-button type="primary" @click="submitForm">立即创建</el-button>
+        <el-button @click="resetForm">重置</el-button>
       </el-form-item>
     </el-form>
   </div>
 </template>
+
 <script>
+import axios from 'axios'
+
 export default {
+  name: 'AddBook',
   data() {
     return {
-      ruleForm: {
-        name: "",
-        author: "",
-        publish: ""
+      bookForm: {
+        name: '',
+        author: '',
+        publish: ''
       },
       rules: {
         name: [
-          {
-            required: true,
-            message: "图书名称不能为空",
-            trigger: "blur"
-          }
+          { required: true, message: '请输入书名', trigger: 'blur' }
         ],
         author: [
-          {
-            required: true,
-            message: "作者不能为空",
-            trigger: "blur"
-          }
+          { required: true, message: '请输入作者', trigger: 'blur' }
         ],
         publish: [
-          {
-            min: 3,
-            max: 30,
-            message: "长度在 3 到 30 个字符",
-            trigger: "blur"
-          }
+          { required: true, message: '请输入出版社', trigger: 'blur' }
         ]
       }
-    };
+    }
   },
   methods: {
-    submitForm(formName) {
-      this.$refs[formName].validate(valid => {
+    submitForm() {
+      this.$refs.bookForm.validate((valid) => {
         if (valid) {
-          axios
-            .post(`http://localhost:9999/book/save/`, this.ruleForm)
+          axios.post('http://localhost:9999/book/save', this.bookForm)
             .then(ret => {
-              if (ret.data == "success") {
-                this.$message({
-                  message: "恭喜你，添加成功！",
-                  type: "success"
-                });
-                this.$router.push('/BookManage')
+              if (ret.data === 'success') {
+                this.$message.success('添加成功');
+                this.$refs.bookForm.resetFields();
+              } else {
+                this.$message.error('添加失败');
               }
+            })
+            .catch(() => {
+              this.$message.error('添加失败');
             });
-        } else {
-          console.log("error submit!!");
-          return false;
         }
       });
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
+    resetForm() {
+      this.$refs.bookForm.resetFields();
     }
   }
-};
+}
 </script>
+
+<style scoped>
+.add-container {
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+</style>

@@ -12,5 +12,7 @@ namespace book_dotnet.Data
 
         public DbSet<Book> Books { get; set; }
         public DbSet<Manager> Managers { get; set; }
+        public DbSet<Reader> Readers { get; set; }
+        public DbSet<LendReturn> LendReturns { get; set; }
     }
 }

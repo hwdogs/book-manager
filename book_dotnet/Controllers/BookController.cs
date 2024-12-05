@@ -125,5 +125,39 @@ namespace book_dotnet.Controllers
 
             return NoContent();
         }
+
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<Book>>> Search([FromQuery] string keyword)
+        {
+            try
+            {
+                var query = _context.Books.AsQueryable();
+
+                if (!string.IsNullOrWhiteSpace(keyword))
+                {
+                    // 尝试解析为ID
+                    if (int.TryParse(keyword, out int id))
+                    {
+                        query = query.Where(b => b.Id == id);
+                    }
+                    else
+                    {
+                        // 按名称、作者或出版社搜索
+                        keyword = keyword.ToLower();
+                        query = query.Where(b =>
+                            b.Name.ToLower().Contains(keyword) ||
+                            b.Author.ToLower().Contains(keyword) ||
+                            b.Publish.ToLower().Contains(keyword));
+                    }
+                }
+
+                var books = await query.Take(10).ToListAsync();
+                return Ok(books);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
     }
 }

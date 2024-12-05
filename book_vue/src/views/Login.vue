@@ -47,11 +47,10 @@ export default {
                 if (valid) {
                     try {
                         const response = await axios.post('http://localhost:9999/manager/login', this.loginForm);
-                        if (response.data === 'success') {
-                            // 存储登录状态
+                        if (response.data.status === 'success') {
                             localStorage.setItem('isLoggedIn', 'true');
-                            // 跳转到主页
-                            this.$router.push('/BookManage');
+                            localStorage.setItem('name', response.data.name);
+                            this.$router.push('/home');
                         } else {
                             this.$message.error('用户名或密码错误');
                         }

@@ -17,16 +17,20 @@ namespace book_dotnet.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<string>> Login([FromBody] Manager loginManager)
+        public async Task<ActionResult<object>> Login([FromBody] Manager manager)
         {
-            var manager = await _context.Managers
-                .FirstOrDefaultAsync(m => m.Name == loginManager.Name && m.Password == loginManager.Password);
+            var result = await _context.Managers
+                .FirstOrDefaultAsync(m => m.Name == manager.Name && m.Password == manager.Password);
 
-            if (manager != null)
+            if (result != null)
             {
-                return "success";
+                return new
+                {
+                    status = "success",
+                    name = result.Name  // 返回用户名
+                };
             }
-            return "error";
+            return new { status = "error" };
         }
 
         [HttpPost("register")]
@@ -112,6 +116,42 @@ namespace book_dotnet.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        [HttpPut("updateProfile")]
+        public async Task<ActionResult<string>> UpdateProfile([FromBody] UpdateProfileRequest request)
+        {
+            try
+            {
+                var manager = await _context.Managers.FirstOrDefaultAsync(m => m.Name == request.Username);
+                if (manager == null)
+                {
+                    return "notfound";
+                }
+
+                // 验证旧密码
+                if (manager.Password != request.OldPassword)
+                {
+                    return "wrongpassword";
+                }
+
+                // 更新密码
+                manager.Password = request.NewPassword;
+                await _context.SaveChangesAsync();
+
+                return "success";
+            }
+            catch (Exception)
+            {
+                return "error";
+            }
+        }
+
+        public class UpdateProfileRequest
+        {
+            public string Username { get; set; }
+            public string OldPassword { get; set; }
+            public string NewPassword { get; set; }
         }
 
         private async Task<bool> ManagerExists(int id)
