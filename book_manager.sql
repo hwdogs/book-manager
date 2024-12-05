@@ -5,17 +5,107 @@
  Source Server Type    : MySQL
  Source Server Version : 80037 (8.0.37)
  Source Host           : localhost:3306
- Source Schema         : library
+ Source Schema         : book_manager
 
  Target Server Type    : MySQL
  Target Server Version : 80037 (8.0.37)
  File Encoding         : 65001
 
- Date: 04/12/2024 19:45:46
+ Date: 05/12/2024 23:29:27
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for book
+-- ----------------------------
+DROP TABLE IF EXISTS `book`;
+CREATE TABLE `book`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(30) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
+  `author` varchar(30) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
+  `publish` varchar(30) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 135 CHARACTER SET = utf8mb3 COLLATE = utf8mb3_general_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of book
+-- ----------------------------
+INSERT INTO `book` VALUES (1, '解忧杂货店', '东野圭吾', '电子工业出版社');
+INSERT INTO `book` VALUES (2, '追风筝的人', '卡勒德·胡赛尼', '中信出版社');
+INSERT INTO `book` VALUES (3, '人间失格', '太宰治', '作家出版社');
+INSERT INTO `book` VALUES (4, '这就是二十四节气', '高春香', '电子工业出版社');
+INSERT INTO `book` VALUES (5, '白夜行', '东野圭吾', '南海出版公司');
+INSERT INTO `book` VALUES (6, '摆渡人', '克莱儿·麦克福尔', '百花洲文艺出版社');
+INSERT INTO `book` VALUES (7, '暖暖心绘本', '米拦弗特毕', '湖南少儿出版社');
+INSERT INTO `book` VALUES (8, '天才在左疯子在右', '高铭', '北京联合出版公司');
+INSERT INTO `book` VALUES (9, '我们仨', '杨绛', '生活.读书.新知三联书店');
+INSERT INTO `book` VALUES (10, '活着', '余华', '作家出版社');
+INSERT INTO `book` VALUES (119, '时间的秩序', ' [意] 卡洛·罗韦利', '湖南科学技术出版社');
+INSERT INTO `book` VALUES (120, '偷影子的人', ' [法] 马克·李维', '湖南文艺出版社');
+INSERT INTO `book` VALUES (121, '在路上', '(美) 杰克·凯鲁亚克', '人民文学出版社');
+INSERT INTO `book` VALUES (122, '呼吸', ' [美] 特德·姜', '译林出版社');
+INSERT INTO `book` VALUES (123, '书店日记', '[英] 肖恩·白塞尔', '广西师范大学出版社');
+INSERT INTO `book` VALUES (124, 'mybook', 'my', 'mypublish');
+INSERT INTO `book` VALUES (127, '红楼梦', '[清] 曹雪芹', '人民文学出版社');
+INSERT INTO `book` VALUES (128, '1984', '[英] 乔治·奥威尔 / 刘绍铭', '北京十月文艺出版社');
+INSERT INTO `book` VALUES (129, '哈利·波特', 'J.K.罗琳 (J.K.Rowling) / 苏农', '人民文学出版社');
+INSERT INTO `book` VALUES (130, '三体全集 : 地球往事三部曲', '刘慈欣 ', '重庆出版社');
+INSERT INTO `book` VALUES (131, '百年孤独', '[哥伦比亚] 加西亚·马尔克斯 / 范晔 ', '南海出版公司');
+INSERT INTO `book` VALUES (132, '飘', '[美国] 玛格丽特·米切尔 / 李美华', '译林出版社');
+INSERT INTO `book` VALUES (133, '三国演义（全二册）', '[明] 罗贯中 ', '人民文学出版社');
+INSERT INTO `book` VALUES (134, '动物农场', '[英] 乔治·奥威尔 / 荣如德 ', '上海译文出版社');
+
+-- ----------------------------
+-- Table structure for lend_return
+-- ----------------------------
+DROP TABLE IF EXISTS `lend_return`;
+CREATE TABLE `lend_return`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `reader_id` int NOT NULL,
+  `book_id` int NOT NULL,
+  `lend_data` datetime NOT NULL,
+  `return_data` datetime NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `fk_reader_id`(`reader_id` ASC) USING BTREE,
+  INDEX `fk_book_id`(`book_id` ASC) USING BTREE,
+  CONSTRAINT `fk_book_id` FOREIGN KEY (`book_id`) REFERENCES `book` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_reader_id` FOREIGN KEY (`reader_id`) REFERENCES `reader` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of lend_return
+-- ----------------------------
+INSERT INTO `lend_return` VALUES (1, 1, 1, '2024-12-04 19:55:43', '2024-12-04 21:37:20');
+INSERT INTO `lend_return` VALUES (2, 31, 123, '2024-12-04 19:56:06', '2024-12-04 23:15:16');
+INSERT INTO `lend_return` VALUES (4, 1, 10, '2024-12-03 19:56:38', NULL);
+INSERT INTO `lend_return` VALUES (5, 1, 2, '2024-12-04 21:45:04', '2024-12-04 21:45:13');
+INSERT INTO `lend_return` VALUES (6, 10, 119, '2024-12-04 21:54:56', '2024-12-04 23:08:06');
+INSERT INTO `lend_return` VALUES (7, 20, 8, '2024-10-01 22:18:16', '2024-12-04 23:06:11');
+INSERT INTO `lend_return` VALUES (8, 20, 123, '2024-09-25 22:19:32', '2024-12-04 23:08:07');
+INSERT INTO `lend_return` VALUES (9, 20, 124, '2024-09-02 23:08:37', '2024-12-04 23:10:30');
+INSERT INTO `lend_return` VALUES (10, 60, 127, '2024-12-04 23:13:47', '2024-12-04 23:14:17');
+INSERT INTO `lend_return` VALUES (11, 60, 127, '2024-12-04 23:16:37', '2024-12-04 23:16:42');
+INSERT INTO `lend_return` VALUES (13, 60, 128, '2024-10-01 22:04:40', NULL);
+INSERT INTO `lend_return` VALUES (14, 60, 131, '2024-10-02 22:05:38', NULL);
+
+-- ----------------------------
+-- Table structure for manager
+-- ----------------------------
+DROP TABLE IF EXISTS `manager`;
+CREATE TABLE `manager`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `password` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of manager
+-- ----------------------------
+INSERT INTO `manager` VALUES (1, 'hwsh', '111111');
+INSERT INTO `manager` VALUES (2, 'hwsh1', '222222');
 
 -- ----------------------------
 -- Table structure for reader
@@ -31,12 +121,12 @@ CREATE TABLE `reader`  (
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `notes` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 59 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 61 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of reader
 -- ----------------------------
-INSERT INTO `reader` VALUES (1, '陈一', 1, '北京市东城区东华门街道', '北京市朝阳区酒仙桥街道', 'chenyi@example.com', '2024-12-03 17:58:42', '喜欢看历史类书籍');
+INSERT INTO `reader` VALUES (1, '陈一1', 1, '北京市东城区东华门街道', '北京市朝阳区酒仙桥街道', 'chenyi@example.com', '2024-12-03 17:58:42', '喜欢看历史类书籍');
 INSERT INTO `reader` VALUES (2, '李二', 0, '上海市黄浦区南京东路街道', '上海市徐汇区漕河泾街道', 'lier@example.com', '2024-12-03 17:58:42', '热爱科技类书籍');
 INSERT INTO `reader` VALUES (3, '张三', 1, '广州市越秀区北京路街道', '广州市天河区珠江新城街道', 'zhangsan@example.com', '2024-12-03 17:58:42', '喜欢音乐类书籍');
 INSERT INTO `reader` VALUES (4, '李四', 1, '深圳市福田区华强北街道', '深圳市南山区高新南街道', 'lisi@example.com', '2024-12-03 17:58:42', '热爱旅游类书籍');
@@ -94,5 +184,7 @@ INSERT INTO `reader` VALUES (55, '黄小明', 1, '湖南省长沙市芙蓉区芙
 INSERT INTO `reader` VALUES (56, '徐小红', 0, '四川省成都市武侯区桂溪街道', '湖南省株洲市天元区栗树街道', 'xuxiaohong@example.com', '2024-12-03 17:58:42', '喜欢文学类书籍');
 INSERT INTO `reader` VALUES (57, '胡小刚', 1, '湖南省湘潭市雨湖区潇湘南路', '四川省成都市青羊区人民中路', 'huxiaogang@example.com', '2024-12-03 17:58:42', '喜欢历史类书籍');
 INSERT INTO `reader` VALUES (58, '朱小伟', 1, '四川省绵阳市涪城区红星路', '湖南省株洲市天元区芦淞北路', 'zhuxiaowei@example.com', '2024-12-03 17:58:42', '喜欢哲学类书籍');
+INSERT INTO `reader` VALUES (59, '陈一2', 1, '北京市东城区东华门街道2', '北京市朝阳区酒仙桥街道2', 'chenyi2@example.com', '2024-12-04 21:01:56', '');
+INSERT INTO `reader` VALUES (60, '黄万首', 1, 'guet', '北京市朝阳区酒仙桥街道2', 'hwsh@example.com', '2024-12-04 23:12:30', '你好');
 
 SET FOREIGN_KEY_CHECKS = 1;
