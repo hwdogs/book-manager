@@ -72,6 +72,17 @@ export default {
         axios.delete(`http://localhost:9999/reader/delete/${row.id}`).then(ret => {
           if (ret.data === 'success') {
             this.$message.success('删除成功');
+            
+            // 计算删除后的总页数
+            const newTotal = this.total - 1;
+            const newTotalPages = Math.ceil(newTotal / this.pageSize);
+            
+            // 如果当前页大于新的总页数，就跳转到最后一页
+            if (this.currentPage > newTotalPages) {
+              this.currentPage = Math.max(1, newTotalPages);
+            }
+            
+            // 重新获取当前页数据
             this.fetchData(this.currentPage);
           } else {
             this.$message.error('删除失败');
