@@ -140,6 +140,15 @@ const routes = [
     icon: 'el-icon-document-copy'
   },
   {
+    path: '/BookUpdate',
+    component: BookUpdate,
+    name: '修改图书信息',
+    show: false,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
     path: '/',
     redirect: '/home'
   }

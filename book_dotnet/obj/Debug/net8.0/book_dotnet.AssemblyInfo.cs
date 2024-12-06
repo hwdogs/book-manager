@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("book_dotnet")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7034327e1bcad6b602904c9306d21134c08eadca")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+207ff408c7112904f8e7b64e940fb937c7d6e685")]
 [assembly: System.Reflection.AssemblyProductAttribute("book_dotnet")]
 [assembly: System.Reflection.AssemblyTitleAttribute("book_dotnet")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
