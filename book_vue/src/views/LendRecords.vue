@@ -1,5 +1,17 @@
 <template>
   <div class="records-container">
+    <div class="search-container">
+      <el-input
+        v-model="searchKeyword"
+        placeholder="输入读者姓名或图书名称搜索"
+        class="search-input"
+        clearable
+        @clear="resetSearch"
+      >
+        <el-button slot="append" icon="el-icon-search" @click="handleSearch"></el-button>
+      </el-input>
+    </div>
+
     <el-table :data="tableData" border style="width: 100%">
       <el-table-column fixed prop="id" label="ID" width="80"></el-table-column>
       <el-table-column prop="readerName" label="读者姓名" width="120"></el-table-column>
@@ -47,6 +59,7 @@ export default {
   name: 'LendRecords',
   data() {
     return {
+      searchKeyword: '',
       pageSize: 8,
       total: 0,
       currentPage: 1,
@@ -97,6 +110,32 @@ export default {
       const lendTime = new Date(lendDate);
       const diffDays = Math.floor((now - lendTime) / (1000 * 60 * 60 * 24));
       return diffDays > 60;
+    },
+    async handleSearch() {
+      try {
+        if (!this.searchKeyword.trim()) {
+          this.fetchData(1);
+          return;
+        }
+
+        const [readerResponse, bookResponse] = await Promise.all([
+          axios.get(`http://localhost:9999/lendReturn/searchByReader?keyword=${this.searchKeyword}`),
+          axios.get(`http://localhost:9999/lendReturn/searchByBook?keyword=${this.searchKeyword}`)
+        ]);
+
+        const allRecords = [...readerResponse.data, ...bookResponse.data];
+        const uniqueRecords = Array.from(new Map(allRecords.map(item => [item.id, item])).values());
+        
+        this.tableData = uniqueRecords;
+        this.total = uniqueRecords.length;
+      } catch (error) {
+        console.error('Search error:', error);
+        this.$message.error('搜索失败');
+      }
+    },
+    resetSearch() {
+      this.searchKeyword = '';
+      this.fetchData(1);
     }
   },
   created() {
@@ -110,6 +149,14 @@ export default {
 <style scoped>
 .records-container {
   padding: 20px;
+}
+
+.search-container {
+  margin-bottom: 20px;
+}
+
+.search-input {
+  max-width: 400px;
 }
 
 .overdue-return {

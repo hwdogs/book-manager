@@ -1,5 +1,17 @@
 <template>
   <div class="manage-container">
+    <div class="search-container">
+      <el-input
+        v-model="searchKeyword"
+        placeholder="输入书名、作者或出版社搜索"
+        class="search-input"
+        clearable
+        @clear="resetSearch"
+      >
+        <el-button slot="append" icon="el-icon-search" @click="handleSearch"></el-button>
+      </el-input>
+    </div>
+
     <el-table :data="tableData" border style="width: 100%;">
       <el-table-column fixed prop="id" label="ID"></el-table-column>
       <el-table-column prop="name" label="书名"></el-table-column>
@@ -59,11 +71,40 @@ export default {
           this.total = ret.data.totalElements;
           this.pageSize = ret.data.size;
         });
+    },
+    async handleSearch() {
+      try {
+        if (!this.searchKeyword.trim()) {
+          this.fetchData(1);
+          return;
+        }
+        const response = await axios.get(`http://localhost:9999/book/search?keyword=${this.searchKeyword}`);
+        this.tableData = response.data;
+        this.total = response.data.length;
+      } catch (error) {
+        console.error('Search error:', error);
+        this.$message.error('搜索失败');
+      }
+    },
+    resetSearch() {
+      this.searchKeyword = '';
+      this.fetchData(1);
+    },
+    async fetchData(page) {
+      try {
+        const response = await axios.get(`http://localhost:9999/book/findAll/${page - 1}/8`);
+        this.tableData = response.data.content;
+        this.total = response.data.totalElements;
+        this.pageSize = response.data.size;
+      } catch (error) {
+        this.$message.error('获取数据失败');
+      }
     }
   },
   data() {
     return {
-      pageSize: null,
+      searchKeyword: '',
+      pageSize: 8,
       total: null,
       currentPage: 1,
       tableData: []
@@ -102,14 +143,11 @@ export default {
   padding: 20px;
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.search-container {
   margin-bottom: 20px;
 }
 
-.header h2 {
-  margin: 0;
+.search-input {
+  max-width: 400px;
 }
 </style>

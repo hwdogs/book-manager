@@ -1,5 +1,17 @@
 <template>
   <div class="manage-container">
+    <div class="search-container">
+      <el-input
+        v-model="searchKeyword"
+        placeholder="输入姓名或地址搜索"
+        class="search-input"
+        clearable
+        @clear="resetSearch"
+      >
+        <el-button slot="append" icon="el-icon-search" @click="handleSearch"></el-button>
+      </el-input>
+    </div>
+
     <el-table :data="tableData" border style="width: 100%;">
       <el-table-column fixed prop="id" label="ID" width="70"></el-table-column>
       <el-table-column prop="name" label="姓名" width="120"></el-table-column>
@@ -43,6 +55,7 @@ export default {
   name: 'ReaderManage',
   data() {
     return {
+      searchKeyword: '',
       pageSize: 8,
       total: 0,
       currentPage: 1,
@@ -79,19 +92,33 @@ export default {
       this.currentPage = page;
       this.fetchData(page);
     },
-    fetchData(page) {
-      console.log('Fetching data for page:', page);  // 添加调试日志
-      axios.get(`http://localhost:9999/reader/findAll/${page - 1}/8`)
-        .then(ret => {
-          console.log('Response data:', ret.data);  // 添加调试日志
-          this.tableData = ret.data.content;
-          this.total = ret.data.totalElements;
-          this.pageSize = ret.data.size;
-        })
-        .catch(error => {
-          console.error('Error fetching data:', error);  // 添加错误日志
-          this.$message.error('获取数据失败');
-        });
+    async handleSearch() {
+      try {
+        if (!this.searchKeyword.trim()) {
+          this.fetchData(1);
+          return;
+        }
+        const response = await axios.get(`http://localhost:9999/reader/search?keyword=${this.searchKeyword}`);
+        this.tableData = response.data;
+        this.total = response.data.length;
+      } catch (error) {
+        console.error('Search error:', error);
+        this.$message.error('搜索失败');
+      }
+    },
+    resetSearch() {
+      this.searchKeyword = '';
+      this.fetchData(1);
+    },
+    async fetchData(page) {
+      try {
+        const response = await axios.get(`http://localhost:9999/reader/findAll/${page - 1}/8`);
+        this.tableData = response.data.content;
+        this.total = response.data.totalElements;
+        this.pageSize = response.data.size;
+      } catch (error) {
+        this.$message.error('获取数据失败');
+      }
     }
   },
   created() {
@@ -105,5 +132,13 @@ export default {
 <style scoped>
 .manage-container {
   padding: 20px;
+}
+
+.search-container {
+  margin-bottom: 20px;
+}
+
+.search-input {
+  max-width: 400px;
 }
 </style> 
