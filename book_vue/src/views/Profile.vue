@@ -39,6 +39,8 @@ export default {
         callback(new Error('请输入新密码'));
       } else if (value === this.profileForm.oldPassword) {
         callback(new Error('新密码不能与旧密码相同'));
+      } else if (value.length < 6) {
+        callback(new Error('密码长度不能小于6个字符'));
       } else {
         if (this.profileForm.confirmPassword !== '') {
           this.$refs.profileForm.validateField('confirmPassword');
@@ -68,9 +70,12 @@ export default {
           { required: true, message: '请输入旧密码', trigger: 'blur' }
         ],
         newPassword: [
+          { required: true, message: '请输入新密码', trigger: 'blur' },
+          { min: 6, message: '密码长度不能小于6个字符', trigger: 'blur' },
           { validator: validatePass, trigger: 'blur' }
         ],
         confirmPassword: [
+          { required: true, message: '请再次输入密码', trigger: 'blur' },
           { validator: validatePass2, trigger: 'blur' }
         ]
       }
