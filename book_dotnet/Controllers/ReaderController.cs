@@ -75,6 +75,7 @@ namespace book_dotnet.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Error in FindAll: {ex.Message}");
                 return StatusCode(500, "Internal server error");
             }
         }

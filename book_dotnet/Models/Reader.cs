@@ -6,6 +6,15 @@ namespace book_dotnet.Models
     [Table("reader")]
     public class Reader
     {
+        public Reader()
+        {
+            Name = string.Empty;
+            WorkAddress = string.Empty;
+            HomeAddress = string.Empty;
+            Email = string.Empty;
+            Notes = string.Empty;
+        }
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }

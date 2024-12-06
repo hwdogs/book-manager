@@ -6,6 +6,12 @@ namespace book_dotnet.Models
     [Table("lend_return")]
     public class LendReturn
     {
+        public LendReturn()
+        {
+            Reader = null!;
+            Book = null!;
+        }
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -25,7 +31,6 @@ namespace book_dotnet.Models
         [Column("return_data")]
         public DateTime? ReturnDate { get; set; }
 
-        // µº∫Ω Ù–‘
         [ForeignKey("ReaderId")]
         public virtual Reader Reader { get; set; }
 

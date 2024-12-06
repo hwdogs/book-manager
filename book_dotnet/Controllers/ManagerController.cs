@@ -153,6 +153,13 @@ namespace book_dotnet.Controllers
 
         public class UpdateProfileRequest
         {
+            public UpdateProfileRequest()
+            {
+                Username = string.Empty;
+                OldPassword = string.Empty;
+                NewPassword = string.Empty;
+            }
+
             public string Username { get; set; }
             public string OldPassword { get; set; }
             public string NewPassword { get; set; }

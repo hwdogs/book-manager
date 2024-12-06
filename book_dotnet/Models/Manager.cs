@@ -6,6 +6,12 @@ namespace book_dotnet.Models
     [Table("manager")]
     public class Manager
     {
+        public Manager()
+        {
+            Name = string.Empty;
+            Password = string.Empty;
+        }
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
