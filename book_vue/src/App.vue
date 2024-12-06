@@ -183,7 +183,10 @@ export default {
     },
     handleOverdueCommand(command) {
       if (command === 'return') {
-        this.goToReturn();
+        this.$router.push({
+          path: '/ReturnBook',
+          query: { from: 'overdue' }
+        });
       }
     },
     updateUsername() {

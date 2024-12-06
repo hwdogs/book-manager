@@ -61,7 +61,8 @@ export default {
       searchForm: {
         keyword: ''
       },
-      records: []
+      records: [],
+      isFromOverdue: false
     }
   },
   methods: {
@@ -96,6 +97,9 @@ export default {
           this.$message.success('还书成功');
           this.records = this.records.filter(r => r.id !== record.id);
           EventBus.$emit('book-returned');
+          if (this.searchForm.keyword) {
+            this.searchRecords();
+          }
         } else {
           this.$message.error('还书失败');
         }
@@ -109,6 +113,35 @@ export default {
       const lendTime = new Date(lendDate);
       const diffDays = Math.floor((now - lendTime) / (1000 * 60 * 60 * 24));
       return diffDays > 60;
+    },
+    async loadOverdueRecords() {
+      try {
+        const response = await axios.get('http://localhost:9999/lendReturn/findAll/0/1000');
+        if (response.data && response.data.content) {
+          const now = new Date();
+          this.records = response.data.content.filter(record => {
+            if (!record.returnDate) {
+              const lendDate = new Date(record.lendDate);
+              const diffDays = Math.floor((now - lendDate) / (1000 * 60 * 60 * 24));
+              return diffDays > 60;
+            }
+            return false;
+          });
+
+          if (this.records.length === 0) {
+            this.$message.info('没有超期图书需要归还');
+          }
+        }
+      } catch (error) {
+        console.error('Load overdue records error:', error);
+        this.$message.error('加载超期记录失败');
+      }
+    }
+  },
+  created() {
+    if (this.$route.query.from === 'overdue') {
+      this.isFromOverdue = true;
+      this.loadOverdueRecords();
     }
   }
 }
