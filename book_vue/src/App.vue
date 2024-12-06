@@ -120,7 +120,7 @@
               <router-view></router-view>
             </el-main>
             <el-footer>
-              <a href="http://beian.miit.gov.cn/">基于.NET core的图书管理系统 by 2200330119黄万首</a>
+              <a href="https://github.com/hwdogs/book-manager">基于.NET core的图书管理系统 by 2200330119黄万首</a>
             </el-footer>
           </el-container>
         </el-container>
