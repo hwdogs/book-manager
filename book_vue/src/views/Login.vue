@@ -79,11 +79,17 @@ export default {
               console.log('Saved name to localStorage:', response.data.name);
               this.$message.success('登录成功！');
               
-              // 登录成功后先跳转到首页
-              await this.$router.push('/home');
+              // 先触发用户登录事件
+              EventBus.$emit('user-logged-in');
               
-              // 然后通过EventBus触发检查超期图书
+              // 等待一小段时间确保事件处理完成
+              await new Promise(resolve => setTimeout(resolve, 100));
+              
+              // 然后触发检查超期图书
               EventBus.$emit('book-returned');
+              
+              // 最后再跳转到首页
+              this.$router.push('/home');
             } else {
               this.$message.error('用户名或密码错误');
             }
