@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using book_dotnet.Models;
 using book_dotnet.Data;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 
 namespace book_dotnet.Controllers
 {
@@ -268,16 +269,20 @@ namespace book_dotnet.Controllers
 
                 if (!string.IsNullOrWhiteSpace(keyword))
                 {
-                    // 尝试解析为ID
+                    keyword = keyword.ToLower();
+                    // 同时搜索ID和书名
                     if (int.TryParse(keyword, out int id))
                     {
-                        query = query.Where(lr => lr.BookId == id);
+                        query = query.Where(lr =>
+                            lr.BookId == id ||
+                            EF.Functions.Like(lr.Book.Name.ToLower(), $"%{keyword}%")
+                        );
                     }
                     else
                     {
-                        // 按图书名称搜索
-                        keyword = keyword.ToLower();
-                        query = query.Where(lr => lr.Book.Name.ToLower().Contains(keyword));
+                        query = query.Where(lr =>
+                            EF.Functions.Like(lr.Book.Name.ToLower(), $"%{keyword}%")
+                        );
                     }
                 }
 
@@ -294,10 +299,12 @@ namespace book_dotnet.Controllers
                     })
                     .ToListAsync();
 
+                Console.WriteLine($"SearchByBook found {records.Count} records for keyword: {keyword}");
                 return Ok(records);
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"SearchByBook error: {ex.Message}");
                 return StatusCode(500, new { error = ex.Message });
             }
         }

@@ -148,6 +148,17 @@ export default {
     const page = parseInt(this.$route.query.page) || 1;
     this.currentPage = page;
     this.fetchData(page);
+  },
+  watch: {
+    '$route.query.page': {
+      handler(newPage) {
+        if (newPage) {
+          this.currentPage = parseInt(newPage);
+          this.fetchData(this.currentPage);
+        }
+      },
+      immediate: true
+    }
   }
 };
 </script>

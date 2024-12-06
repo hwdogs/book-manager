@@ -73,7 +73,7 @@ export default {
               this.$message.success('更新成功');
               this.$router.push({
                 path: '/ReaderManage',
-                query: { page: this.currentPage }
+                query: { page: this.$route.query.page || 1 }
               });
             } else {
               this.$message.error('更新失败');
@@ -87,7 +87,7 @@ export default {
     goBack() {
       this.$router.push({
         path: '/ReaderManage',
-        query: { page: this.currentPage }
+        query: { page: this.$route.query.page || 1 }
       });
     },
     async fetchReaderData() {
