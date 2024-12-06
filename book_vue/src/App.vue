@@ -41,6 +41,7 @@
               </el-dropdown>
               <el-dropdown @command="handleCommand" trigger="click">
                 <el-button type="text" class="user-button">
+                  <i class="el-icon-s-custom" style="margin-right: 5px; font-size: 16px;"></i>
                   {{ username }}
                   <i class="el-icon-arrow-down el-icon--right"></i>
                 </el-button>
@@ -137,7 +138,7 @@ export default {
   data() {
     return {
       overdueCount: 0,
-      username: localStorage.getItem('name') || '管理员'
+      username: ''
     }
   },
   methods: {
@@ -184,16 +185,29 @@ export default {
       if (command === 'return') {
         this.goToReturn();
       }
+    },
+    updateUsername() {
+      const savedName = localStorage.getItem('name');
+      console.log('Updating username from localStorage:', savedName);
+      this.username = savedName || '管理员';
     }
   },
   created() {
     if (localStorage.getItem('isLoggedIn') === 'true') {
+      this.updateUsername();
       this.checkOverdueBooks();
-      // 每分钟检查一次超期图书
       setInterval(this.checkOverdueBooks, 60000);
-      
-      // 监听还书成功事件
       EventBus.$on('book-returned', this.checkOverdueBooks);
+    }
+  },
+  watch: {
+    '$route': {
+      handler() {
+        if (localStorage.getItem('isLoggedIn') === 'true') {
+          this.updateUsername();
+        }
+      },
+      immediate: true
     }
   },
   beforeDestroy() {

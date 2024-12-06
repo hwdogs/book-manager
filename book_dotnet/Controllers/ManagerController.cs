@@ -19,17 +19,21 @@ namespace book_dotnet.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<object>> Login([FromBody] Manager manager)
         {
+            Console.WriteLine($"Login attempt - Name: {manager.Name}");
+
             var result = await _context.Managers
                 .FirstOrDefaultAsync(m => m.Name == manager.Name && m.Password == manager.Password);
 
             if (result != null)
             {
+                Console.WriteLine($"Login successful - Returning name: {result.Name}");
                 return new
                 {
                     status = "success",
-                    name = result.Name  // 返回用户名
+                    name = result.Name  // 返回实际的用户名
                 };
             }
+            Console.WriteLine("Login failed");
             return new { status = "error" };
         }
 

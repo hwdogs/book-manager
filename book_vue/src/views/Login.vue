@@ -69,15 +69,18 @@ export default {
           try {
             this.loading = true;
             const response = await axios.post('http://localhost:9999/manager/login', this.loginForm);
+            console.log('Login response:', response.data);
             if (response.data.status === 'success') {
               localStorage.setItem('isLoggedIn', 'true');
               localStorage.setItem('name', response.data.name);
+              console.log('Saved name to localStorage:', response.data.name);
               this.$message.success('登录成功！');
               this.$router.push('/home');
             } else {
               this.$message.error('用户名或密码错误');
             }
           } catch (error) {
+            console.error('Login error:', error);
             this.$message.error('登录失败');
           } finally {
             this.loading = false;
