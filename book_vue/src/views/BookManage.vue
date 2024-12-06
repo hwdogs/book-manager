@@ -17,10 +17,22 @@
       <el-table-column prop="name" label="书名"></el-table-column>
       <el-table-column prop="author" label="作者"></el-table-column>
       <el-table-column prop="publish" label="出版社"></el-table-column>
-      <el-table-column fixed="right" label="操作">
+      <el-table-column fixed="right" label="操作" width="150">
         <template slot-scope="scope">
-          <el-button @click="update(scope.row)" type="text" size="small">修改</el-button>
-          <el-button @click="deleteBook(scope.row)" type="text" size="small">删除</el-button>
+          <el-button 
+            @click="update(scope.row)" 
+            type="text" 
+            size="small"
+            class="edit-button">
+            <i class="el-icon-edit"></i> 修改
+          </el-button>
+          <el-button 
+            @click="deleteBook(scope.row)" 
+            type="text" 
+            size="small"
+            class="delete-button">
+            <i class="el-icon-delete"></i> 删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -167,5 +179,21 @@ export default {
 
 .search-input {
   max-width: 400px;
+}
+
+.edit-button {
+  color: #409EFF;  /* 蓝色 */
+}
+
+.edit-button:hover {
+  color: #66b1ff;
+}
+
+.delete-button {
+  color: #F56C6C;  /* 红色 */
+}
+
+.delete-button:hover {
+  color: #f78989;
 }
 </style>
