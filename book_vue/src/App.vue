@@ -138,7 +138,8 @@ export default {
   data() {
     return {
       overdueCount: 0,
-      username: ''
+      username: '',
+      checkInterval: null
     }
   },
   methods: {
@@ -193,15 +194,36 @@ export default {
       const savedName = localStorage.getItem('name');
       console.log('Updating username from localStorage:', savedName);
       this.username = savedName || '管理员';
+    },
+    async initializeApp() {
+      // 初始化应用状态
+      if (localStorage.getItem('isLoggedIn') === 'true') {
+        this.updateUsername();
+        await this.checkOverdueBooks();  // 等待检查完成
+        this.startPeriodicCheck();
+      }
+    },
+    startPeriodicCheck() {
+      // 清除可能存在的旧定时器
+      if (this.checkInterval) {
+        clearInterval(this.checkInterval);
+      }
+      // 设置新的定时器
+      this.checkInterval = setInterval(this.checkOverdueBooks, 60000);
     }
   },
   created() {
-    if (localStorage.getItem('isLoggedIn') === 'true') {
-      this.updateUsername();
-      this.checkOverdueBooks();
-      setInterval(this.checkOverdueBooks, 60000);
-      EventBus.$on('book-returned', this.checkOverdueBooks);
-    }
+    // 初始化时调用
+    this.initializeApp();
+    
+    // 监听登录事件
+    EventBus.$on('user-logged-in', async () => {
+      console.log('User logged in event received');
+      await this.initializeApp();  // 用户登录后重新初始化
+    });
+    
+    // 监听还书事件
+    EventBus.$on('book-returned', this.checkOverdueBooks);
   },
   watch: {
     '$route': {
@@ -214,8 +236,12 @@ export default {
     }
   },
   beforeDestroy() {
-    // 组件销毁前移除事件监听
+    // 清理事件监听和定时器
+    EventBus.$off('user-logged-in');
     EventBus.$off('book-returned', this.checkOverdueBooks);
+    if (this.checkInterval) {
+      clearInterval(this.checkInterval);
+    }
   }
 }
 </script>
