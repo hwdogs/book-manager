@@ -5,12 +5,13 @@
         <h2>注册新账号</h2>
         <p>Join Us</p>
       </div>
-      <el-form :model="registerForm" :rules="rules" ref="registerForm" class="register-form">
+      <el-form :model="registerForm" :rules="rules" ref="registerForm" class="register-form" autocomplete="off">
         <el-form-item prop="name">
           <el-input 
             v-model="registerForm.name" 
             prefix-icon="el-icon-user" 
-            placeholder="用户名">
+            placeholder="用户名"
+            autocomplete="off">
           </el-input>
         </el-form-item>
         <el-form-item prop="password">
@@ -18,7 +19,8 @@
             v-model="registerForm.password" 
             prefix-icon="el-icon-lock" 
             type="password" 
-            placeholder="密码">
+            placeholder="密码"
+            autocomplete="new-password">
           </el-input>
         </el-form-item>
         <el-form-item prop="confirmPassword">
@@ -26,7 +28,8 @@
             v-model="registerForm.confirmPassword" 
             prefix-icon="el-icon-key" 
             type="password" 
-            placeholder="确认密码">
+            placeholder="确认密码"
+            autocomplete="new-password">
           </el-input>
         </el-form-item>
         <el-form-item>

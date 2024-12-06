@@ -5,12 +5,13 @@
         <h2>图书管理系统</h2>
         <p>Welcome Back</p>
       </div>
-      <el-form :model="loginForm" :rules="rules" ref="loginForm" class="login-form">
+      <el-form :model="loginForm" :rules="rules" ref="loginForm" class="login-form" autocomplete="off">
         <el-form-item prop="name">
           <el-input 
             v-model="loginForm.name" 
             prefix-icon="el-icon-user" 
-            placeholder="用户名">
+            placeholder="用户名"
+            autocomplete="off">
           </el-input>
         </el-form-item>
         <el-form-item prop="password">
@@ -19,6 +20,7 @@
             prefix-icon="el-icon-lock" 
             type="password" 
             placeholder="密码"
+            autocomplete="new-password"
             @keyup.enter.native="handleLogin">
           </el-input>
         </el-form-item>
