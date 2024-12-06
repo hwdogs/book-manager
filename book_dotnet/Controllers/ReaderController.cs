@@ -151,27 +151,21 @@ namespace book_dotnet.Controllers
 
                 if (!string.IsNullOrWhiteSpace(keyword))
                 {
-                    // 尝试解析为ID
-                    if (int.TryParse(keyword, out int id))
-                    {
-                        query = query.Where(r => r.Id == id);
-                    }
-                    else
-                    {
-                        // 按姓名或地址搜索
-                        keyword = keyword.ToLower();
-                        query = query.Where(r =>
-                            r.Name.ToLower().Contains(keyword) ||
-                            r.WorkAddress.ToLower().Contains(keyword) ||
-                            r.HomeAddress.ToLower().Contains(keyword));
-                    }
+                    keyword = keyword.ToLower();
+                    query = query.Where(r =>
+                        EF.Functions.Like(r.Name.ToLower(), $"%{keyword}%") ||
+                        EF.Functions.Like(r.WorkAddress.ToLower(), $"%{keyword}%") ||
+                        EF.Functions.Like(r.HomeAddress.ToLower(), $"%{keyword}%") ||
+                        (r.Id.ToString() == keyword)
+                    );
                 }
 
-                var readers = await query.Take(10).ToListAsync();
+                var readers = await query.ToListAsync();
                 return Ok(readers);
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Search error: {ex.Message}");
                 return StatusCode(500, new { error = ex.Message });
             }
         }
