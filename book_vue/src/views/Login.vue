@@ -44,6 +44,7 @@
 
 <script>
 import axios from 'axios';
+import { EventBus } from '../utils/eventBus';
 
 export default {
   name: 'Login',
@@ -77,7 +78,12 @@ export default {
               localStorage.setItem('name', response.data.name);
               console.log('Saved name to localStorage:', response.data.name);
               this.$message.success('登录成功！');
-              this.$router.push('/home');
+              
+              // 登录成功后先跳转到首页
+              await this.$router.push('/home');
+              
+              // 然后通过EventBus触发检查超期图书
+              EventBus.$emit('book-returned');
             } else {
               this.$message.error('用户名或密码错误');
             }
